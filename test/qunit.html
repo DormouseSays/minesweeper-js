@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>QUnit basic example</title>
+        <link rel="stylesheet" href="http://code.jquery.com/qunit/qunit-1.17.1.css">
+    </head>
+    <body>
+        <div id="qunit"></div>
+        <div id="qunit-fixture"></div>
+        <script src="http://code.jquery.com/qunit/qunit-1.17.1.js"></script>
+        <script src="ms.js"></script>
+        <script>
+
+            var m = new Sweeper(5,8,10);
+        
+            QUnit.test( "a basic test example", function( assert ) {
+                var value = "hello";
+                assert.equal( value, "hello", "We expect value to be hello" );
+            });
+
+
+            QUnit.test("Initialize Game", function (assert) {
+                assert.equal(m.width, 5, "Width set to 5");
+                assert.equal(m.height, 8, "Height set to 8");
+                assert.equal(m.mines, 10, "Mines set to 10");
+
+                assert.equal(m.board.length, 5, "Board width set to 5");
+                assert.equal(m.board[0].length, 8, "Board height set to 8");
+            });
+
+            QUnit.test("Check Random Board", function (assert) {
+                var count = 0;
+                for (var w = 0; w < m.width; w++) {
+                    for (var h = 0; h < m.height; h++) {
+                        if (m.board[w][h].mine) {
+                            count++;
+                        }
+                    }
+                }
+
+                assert.equal(count, 10, "10 mines placed");
+            });
+
+        </script>
+    </body>
+</html>

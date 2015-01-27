@@ -1,0 +1,193 @@
+﻿<!doctype html>
+<html lang=en-us>
+<head>
+    <meta charset=utf-8>
+    <title>Test</title>
+    
+    <script type="text/javascript" src="../source/ms.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    
+    <style>
+        input, select {
+            margin-bottom: 20px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div id="output">Test</div>
+    
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4">
+				Minesweeper
+			</div>
+			<div class="col-md-4 text-center timer">
+				00:00
+			</div>
+			<div class="col-md-4 text-right">
+				<button type="button" class="btn btn-default button-cursor" aria-label="Left Align">
+					Cursor
+					<span class="glyphicon glyphicon-flag"></span>
+					<span class="glyphicon glyphicon-pushpin"></span>
+					<span class="glyphicon glyphicon-ok"></span>
+				</button>
+			</div>
+
+		</div>
+	</div>
+	
+    <div class="container">
+        
+    </div>
+
+    <script type="text/javascript">
+
+		var CURSOR = {POINTER:0, FLAG: 1, QUESTION: 2};
+		
+        var width = 5;
+        var height = 6;
+		var cursor = CURSOR.QUESTION;
+		var timer = null;
+		var timeStart = null;
+
+        var m = new Sweeper(height, width, 5);
+
+        $(document).ready(function() {
+            $c = $('.container');
+            for (var y = 0; y < height; y++) {
+                var $r = $('<div class="row"></div>');
+                for (var x = 0; x < width; x++) {
+                    $r.append('<div class="col-md-1"><input type="text" class="form-control input-sm input-' + x + '-' + y + ' box" data-x="' + x + '" data-y="' + y + '"/></div>');
+                }
+                $c.append($r);
+            }
+			
+			$('.button-cursor').click(changeCursor);
+
+            $('.box').click(function (e) {
+			
+				if(timer == null) {
+					startTimer();
+				}
+                //debugger;
+                var $b = $(e.currentTarget);
+
+                var bx = $b.data('x'), by = $b.data('y');
+				
+				if(cursor === CURSOR.POINTER) {
+					m.open(by, bx);
+				} else if(cursor === CURSOR.FLAG) {
+					m.flag(by, bx);
+				} else if(cursor === CURSOR.QUESTION) {
+					m.mark(by, bx);
+				}
+				
+                update();
+            });
+
+            $('.reset').click(function() {
+                m.reset();
+                update();
+            });
+			
+			changeCursor();
+            update();
+			
+			
+        });
+
+        function update() {
+            var b = m.getBoard();
+            for (var x = 0; x < b.length; x++) {
+                for (var y = 0; y < b[x].length; y++) {
+                    var el = $('.input-' + y + '-' + x);
+                    $('.input-' + y + '-' + x).val(b[x][y]);
+                }
+            }
+        }
+
+        function logArray(arr) {
+            for (var i = 0; i < arr.length; i++) {
+                var row = [];
+                for (var j = 0; j < arr[i].length; j++) {
+                    row.push(arr[i][j].value);
+                }
+                console.log('row ' + String.fromCharCode(i + 65) + ':' + row.join(','));
+            }
+        }
+		
+		function changeCursor() {
+			cursor++;
+			if(cursor > 2) {
+					cursor = 0;
+			}
+			
+			$('.glyphicon').hide();
+			if(cursor == 0) {
+				$('.glyphicon-ok').show();
+			} else if(cursor == 1) {
+				$('.glyphicon-flag').show();
+			} else if(cursor == 2) {
+				$('.glyphicon-pushpin').show();
+			}
+		}
+		
+		startTimer = function(){
+			timeStart = (new Date()).getTime();
+			timer = setTimeout(timerTick, 100);
+		}
+		
+		timerTick = function(){
+			if(!m.active) {
+				return;
+			}
+			
+			var timeCurrent = (new Date()).getTime();
+			var delta = timeCurrent - timeStart;
+			
+			$('.timer').text(formatTime(delta));
+		
+			timer = setTimeout(timerTick, 100);
+		}
+		
+		function formatTime(ms) {
+			var str = "";
+			
+			var s = Math.floor(ms / 1000);
+			ms = ms - s * 1000;
+			
+			var m = Math.floor(s / 60);
+			s = s - m * 60;
+			
+			if(m < 10) {
+				str = '0' + m;
+			} else {
+				str = m;
+			}
+			
+			if(s < 10) {
+				str += ':0' + s;
+			} else {
+				str += ':' + s;
+			}
+			
+			//str += ':' + ms;
+			
+			return str;
+		}
+    </script>
+</body>
+</html>
