@@ -1,0 +1,97 @@
+﻿<!doctype html>
+<html lang=en-us>
+<head>
+    <meta charset=utf-8>
+    <title>Test</title>
+    
+    <script type="text/javascript" src="../source/ms.js"></script>
+    
+    
+    <style>
+        input, select {
+            margin-bottom: 20px;
+        }
+
+        .table {
+            display: table;
+            border-bottom: 1px solid #000;
+            border-right: 1px solid #000;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            padding: 10px;
+            border-top: 1px solid #000;
+            border-left: 1px solid #000;
+        }
+
+    </style>
+    
+    <script>
+        
+        window.onload = function() {
+            var createButton = document.getElementById('create');
+
+            createButton.onclick = function () {
+                var rows = document.getElementById('rows').value;
+                var columns = document.getElementById('columns').value;
+                console.log('create with ' + rows + ',' + columns)
+                createBoard(rows, columns);
+            };
+
+            var board = document.getElementById('container');
+            board.onclick = function (e) {
+                //check target
+                //debugger;
+
+                var t = e.target;
+                t.innerHTML = "1";
+            };
+        }
+
+        
+
+
+        function createBoard(r, c) {
+            var table = document.getElementById('container');
+            table.innerHTML = "";
+
+            for (var y = 0; y < r; y++) {
+                var row = document.createElement("div");
+                row.className = "row";
+                for (var x = 0; x < c; x++) {
+                    var cell = document.createElement("div");
+                    cell.className = "cell";
+                    cell.innerHTML = "0";
+                    cell.id = 'cell_' + r + '_' + c;
+                    row.appendChild(cell);
+                }
+                table.appendChild(row);
+            }
+        }
+
+    </script>
+
+</head>
+<body>
+
+    <h2>Minesweeper</h2>
+    
+    
+    <div id="container" class="table">
+        
+    </div>
+    
+    <div class="controls">
+        <button id="create">Create</button>
+        <label>Rows <input id="rows"  value="10"/> </label>
+        <label>Columns <input id="columns" value="8" /> </label>
+    </div>
+
+
+</body>
+</html>
