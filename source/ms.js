@@ -104,7 +104,7 @@ var Sweeper = function(_rows, _columns, _mines) {
         }
 
         //if this is a zero, open all touching squares recursively
-        //since open checks validity, just try each directon
+        //since open checks validity, just try each direction
         if (s.value == 0) {
             this.open(r - 1, c);
             this.open(r + 1, c);

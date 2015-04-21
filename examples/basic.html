@@ -24,15 +24,27 @@
 
         .cell {
             display: table-cell;
-            padding: 10px;
-            border-top: 1px solid #000;
-            border-left: 1px solid #000;
+			width:40px;
+			height:40px;
+			padding: 15px 0 0 20px;
+			border-top: 1px solid #AAA;
+			border-right: 1px solid #000;
+			border-bottom: 1px solid #000;
+			border-left: 1px solid #AAA;
         }
+		
+		.controls {
+			margin-top:20px;
+		}
 
     </style>
     
     <script>
-        
+        var CURSOR = {POINTER:0, FLAG: 1, QUESTION: 2};
+		var m = new Sweeper(1, 1, 5);
+		var cursor = CURSOR.POINTER;
+		
+		
         window.onload = function() {
             var createButton = document.getElementById('create');
 
@@ -49,13 +61,25 @@
                 //debugger;
 
                 var t = e.target;
-                t.innerHTML = "1";
+                //t.innerHTML = "1";
+				var r = parseInt(t.getAttribute('data-row'));
+				var c = parseInt(t.getAttribute('data-col'));
+				console.log('cell at ' + r + ',' + c);
+				
+				if(cursor === CURSOR.POINTER) {
+					m.open(r, c);
+				} else if(cursor === CURSOR.FLAG) {
+					m.flag(r, c);
+				} else if(cursor === CURSOR.QUESTION) {
+					m.mark(r, c);
+				}
+				
+				updateBoard();
             };
+			
+			createBoard(10, 8);
         }
-
-        
-
-
+		
         function createBoard(r, c) {
             var table = document.getElementById('container');
             table.innerHTML = "";
@@ -66,11 +90,25 @@
                 for (var x = 0; x < c; x++) {
                     var cell = document.createElement("div");
                     cell.className = "cell";
-                    cell.innerHTML = "0";
-                    cell.id = 'cell_' + r + '_' + c;
+                    cell.innerHTML = "";
+                    cell.id = 'cell_' + y + '_' + x;
+					cell.setAttribute('data-row', y);
+					cell.setAttribute('data-col', x);
                     row.appendChild(cell);
                 }
                 table.appendChild(row);
+            }
+			
+			m = new Sweeper(r, c, 5);
+        }
+		
+		function updateBoard() {
+            var b = m.getBoard();
+            for (var x = 0; x < b.length; x++) {
+                for (var y = 0; y < b[x].length; y++) {
+                    var cell = document.getElementById('cell_' + x + '_' + y);
+					cell.innerHTML = b[x][y];
+                }
             }
         }
 
@@ -79,9 +117,6 @@
 </head>
 <body>
 
-    <h2>Minesweeper</h2>
-    
-    
     <div id="container" class="table">
         
     </div>
